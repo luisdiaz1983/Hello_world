@@ -1,0 +1,186 @@
+---
+title: "Visualizaciones con ggplot"
+author: Luis Eduardo Diaz
+date: "2 de febrero de 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Primer Documento RMarkdown
+
+## Configuraciones
+
+```{r misConf, include=FALSE}
+setwd("~/hello world")
+
+## Librerias para instalar
+
+install.packages("tidyverse")
+install.packages("treemap")
+install.packages("openair")
+install.packages("quantmod")
+install.packages("readxl")
+install.packages("lubridate")
+
+## Cargar libreras
+
+library(tidyverse)
+library(openair)
+library(quantmod)
+
+## Stock data
+
+library(treemap)
+library(readxl)
+library(lubridate)
+
+```
+## Gramática de los Gráficos
+
+```{r scatterplot, echo=FALSE}
+ggplot(data=diamonds, aes(x=carat,y=price))+
+  geom_point() + 
+  stat_smooth(method = lm) + 
+  scale_x_log10() + 
+  scale_y_log10()
+```
+
+```{r Resumenes}
+# str
+str(mpg)
+# summary conjunto de estadisticos descriptivos
+print("--- O ---")
+summary(mpg)
+```
+# dispersion
+
+```{r dispersion}
+ggplot(data=mpg) +
+geom_point(mapping = aes(x=displ, y=hwy)) +
+  xlab("tamaño motor")+
+  ylab("eficiencia del carro en carretera")
+```
+
+# con colores
+
+```{r dispersion}
+ggplot(data=mpg) +
+geom_point(mapping = aes(x=cyl, y=cty, color=class)) +
+  xlab("numero de cilindros")+
+  ylab("millas por galon")
+```
+# tamaño
+
+```{r size}
+ggplot(data=mpg) +
+geom_point(mapping = aes(x=displ, y=hwy, color=class, size=cyl)) +
+  xlab("Tamaño Motor")+
+  ylab("Millas por Galón")
+```
+
+# alfa
+
+```{r alfa}
+ggplot(data=mpg) +
+geom_point(mapping = aes(x=displ, y=hwy, alpha=class)) +
+  xlab("Tamaño Motor")+
+  ylab("Millas por Galón")
+```
+
+# shape
+
+```{r shape}
+ggplot(data=mpg) +
+geom_point(mapping = aes(x=displ, y=hwy, color="blue")) +
+  xlab("Tamaño Motor")+
+  ylab("Millas por Galón")
+```
+
+# facet 1
+
+```{r facet1}
+ggplot(data=mpg) +
+geom_point(mapping = aes(x=displ, y=hwy, color=class)) +
+  facet_wrap(~class, nrow=3)
+```
+
+# facet mas de una variable
+
+```{r facet2}
+ggplot(data=mpg) +
+geom_point(mapping = aes(x=displ, y=hwy, color=class)) +
+  facet_wrap(drv~cyl)
+```
+
+# plot con facet_grid
+
+```{r facet_grid}
+ggplot(data=mpg) +
+geom_point(mapping = aes(x=drv, y=cyl))
+
+ggplot(data=mpg) +
+geom_point(mapping = aes(x=displ, y=hwy)) +
+  facet_grid(drv~.)
+
+ggplot(data=mpg) +
+geom_point(mapping = aes(x=displ, y=hwy)) +
+  facet_grid(.~cyl)
+```
+
+# plot con geom_point + geom_smoot
+
+```{r geom_smoot}
+ggplot(data=mpg) +
+geom_point(mapping = aes(x=displ, y=hwy))+
+  geom_smooth(mapping = aes(x=displ, y=hwy, linetype=drv, colour=drv))
+
+```
+
+# Gráfico de Barras
+
+```{r barras}
+ggplot(data=diamonds) +
+geom_bar(mapping = aes(x=cut))
+```
+
+# Resumen de estadísticas
+
+```{r stat_summary}
+ggplot(data=diamonds) +
+stat_summary(
+  mapping = aes(x=cut, y=depth),
+  fun.ymin= min,
+  fun.ymax = max,
+  fun.y = median
+)
+```
+
+# con colores
+
+```{r barras_color}
+ggplot(data=diamonds) +
+geom_bar(mapping = aes(x=cut, color=cut, fill=cut))
+```
+# cargar data set
+
+```{r data_Set}
+daily_data=read.csv(file.choose(), header=TRUE, stringsAsFactors=FALSE)
+
+daily_data$Date=as.Date(daily_data$dteday)
+
+```
+
+
+# serie de tiempo
+
+```{r serie_de_tiempo}
+ggplot(daily_data, aes(Date, cnt))+
+    geom_line()+
+    scale_x_date("month")+
+    ylab("total de bicicletas alquiladas")
+    xlab("mes")
+
+```
